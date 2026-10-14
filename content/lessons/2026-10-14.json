@@ -1,0 +1,227 @@
+{
+  "date": "2026-10-14",
+  "theme": "矿山设备数据契约与防泄漏评测",
+  "title": "先让数据可信：矿山维修智能体的数据契约与防泄漏评测",
+  "subtitle": "工业 AI 研究周报 · 数据基础进阶｜设备编号、双时间戳、单位、质量与冻结评测。",
+  "slug": "mining-data-contract-leakage-free-evaluation",
+  "level": "基础到应用",
+  "duration": "阅读 10 分钟 · 实践 20–30 分钟",
+  "sections": [
+    {
+      "type": "research",
+      "label": "PART 01",
+      "title": "研究动态",
+      "blocks": [
+        {
+          "heading": "检索窗口与证据边界",
+          "text": "本期日期：2026-10-14（圭亚那）。优先检查2026-10-07至10-14公开一手资料。联网查看BHP、Rio Tinto新闻入口并进行带日期条件的矿业AI／数字孪生检索：搜索未返回条目，两家新闻入口的可提取正文未提供可核验的相关近七天公告。因此本期没有足够证据编写“本周新突破”；这不等于行业没有进展。以下转为已核验的标准与历史研究材料，分别标明日期或查阅日期。",
+          "sources": [
+            {
+              "title": "BHP · 新闻入口（本次提取不完整）",
+              "url": "https://www.bhp.com/news"
+            },
+            {
+              "title": "Rio Tinto · 新闻入口（本次未提取到相关公告）",
+              "url": "https://www.riotinto.com/en/news"
+            }
+          ]
+        },
+        {
+          "heading": "数据契约：一个数值至少带两种时间",
+          "text": "OPC UA DataValue包含值、状态码、源时间和服务器时间。源时间与服务器时间不能互换；客户端至少检查状态码严重程度。工程单位则属于相关变量元数据，不能假定数值本身已经携带单位。这是标准依据，不是新发布的矿山生产案例。",
+          "sources": [
+            {
+              "title": "OPC Foundation · DataValue（规范，2026-10-14查阅）",
+              "url": "https://reference.opcfoundation.org/specs/OPC-10000-4/7.11"
+            },
+            {
+              "title": "OPC Foundation · AnalogItem与工程单位（规范，2026-10-14查阅）",
+              "url": "https://reference.opcfoundation.org/specs/OPC-10000-8/5.3.2"
+            }
+          ]
+        },
+        {
+          "heading": "评测方向：先阻止“偷看未来”，再谈模型能力",
+          "text": "scikit-learn官方文档把预测时不可用的信息进入训练定义为数据泄漏，并要求先拆分数据，再只在训练集拟合预处理。对矿山维修智能体，同样要冻结当时可检索的手册和工单版本；晚到数据、事后维修结论不能穿越回预测时刻。此处是将通用方法迁移到矿业的教学建议，不是已验证的现场收益。",
+          "sources": [
+            {
+              "title": "scikit-learn · Common pitfalls（持续更新文档，2026-10-14查阅）",
+              "url": "https://scikit-learn.org/stable/common_pitfalls.html"
+            },
+            {
+              "title": "scikit-learn · TimeSeriesSplit（持续更新文档，2026-10-14查阅）",
+              "url": "https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.TimeSeriesSplit.html"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "case",
+      "label": "PART 02",
+      "title": "案例深读",
+      "blocks": [
+        {
+          "heading": "历史研发案例：AI4I 2020，不是矿山生产实绩",
+          "text": "UCI于2020-08-29接收的AI4I数据集含10,000条合成记录，提供六个输入特征及故障相关标签。问题是如何在真实维修数据难公开的条件下研究分类与预测维护。输入包括产品类型、空气／过程温度、转速、扭矩和工具磨损；温度单位为K。它不是浆液泵实测数据，Product ID也不能直接当成矿山设备台账编号。",
+          "sources": [
+            {
+              "title": "UCI · AI4I 2020（2020-08-29捐赠，CC BY 4.0）",
+              "url": "https://archive.ics.uci.edu/dataset/601/ai4i+2020+predictive+maintenance+dataset"
+            }
+          ]
+        },
+        {
+          "heading": "方法与已证实内容",
+          "text": "数据说明给出了温度随机游走、转速／扭矩生成方式及磨损、散热、功率、过应力、随机故障等合成机制。能够核验的是数据规模、变量和生成规则；本期未训练模型，也没有可报告的准确率或停机收益。Machine failure及TWF/HDF/PWF/OSF/RNF均应作为标签信息审查，不能把故障子标签当输入去预测总故障标签。"
+        },
+        {
+          "heading": "局限：识别同一行故障，不等于提前预警",
+          "text": "公开字段没有足够的现场采集时间、数据可用时间与真实资产生命周期信息，不能只凭UID顺序就声称验证了“未来24小时故障预警”。按合成规律获得高分，也不证明对真实矿山工况、传感器漂移或未见故障有效。该案例属于公开合成研发材料；不属于矿山试点或生产部署，也不是厂商收益宣传的独立验证。"
+        }
+      ]
+    },
+    {
+      "type": "knowledge",
+      "label": "PART 03",
+      "title": "自动化知识",
+      "blocks": [
+        {
+          "heading": "概念1｜数据契约：身份、时间、量纲、质量",
+          "text": "设备身份使用厂区／系统命名空间下的稳定assetId，并维护传感器tag与设备映射的生效时间。至少记录sourceTime、平台首次可用的availableTime、数值、单位、原始质量码、采样／变化上报方式和schemaVersion。服务器时间不一定等于分析平台可用时间，需单独采集。存储统一UTC，展示可转圭亚那UTC−4。300 K = 26.85 °C；温差换算则不能再减273.15。Good不等于已证明传感器正确，仍需校准与合理性检查。",
+          "sources": [
+            {
+              "title": "OPC Foundation · DataValue（规范，2026-10-14查阅）",
+              "url": "https://reference.opcfoundation.org/specs/OPC-10000-4/7.11"
+            },
+            {
+              "title": "OPC Foundation · AnalogItem与工程单位（规范，2026-10-14查阅）",
+              "url": "https://reference.opcfoundation.org/specs/OPC-10000-8/5.3.2"
+            }
+          ]
+        },
+        {
+          "heading": "概念2｜数据连接不改变控制责任",
+          "text": "PLC负责确定性的设备控制，DCS负责过程控制体系，SCADA承担监视与操作界面。历史库／经批准的只读接口把数据交给分析层。规则做字段校验和质量分流，ML做经过离线验证的评分，生成式助手解释证据并写草稿，智能体只在授权工具范围内查询补证。Uncertain应单独分流，Bad不用于诊断；不能把缺测填0当正常。源时间很旧可能只是变化上报的值未变，判定“陈旧”需结合服务器更新时间、心跳和采集模式，不能机械地只看sourceTime。"
+        },
+        {
+          "heading": "概念3｜按决策时刻冻结评测",
+          "text": "设预测时刻t与未来观察窗H。输入必须同时满足sourceTime≤t和availableTime≤t；标签描述(t,t+H]是否发生目标故障，只有观察窗完整且维修结论已确认后才能评分。窗口尚未结束或记录不完整的样本标为待定，不当成负例。先按时间划分开发／验证／最终测试；同一故障事件的重叠窗口不得跨集合，边界需留出与特征窗、标签窗相匹配的隔离区。跨设备泛化另做留出设备评测。TimeSeriesSplit不会自动处理事件组、标签延迟或真实时长隔离，gap按样本数计，不能直接等同小时。",
+          "sources": [
+            {
+              "title": "scikit-learn · Common pitfalls（持续更新文档，2026-10-14查阅）",
+              "url": "https://scikit-learn.org/stable/common_pitfalls.html"
+            },
+            {
+              "title": "scikit-learn · TimeSeriesSplit（持续更新文档，2026-10-14查阅）",
+              "url": "https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.TimeSeriesSplit.html"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "application",
+      "label": "PART 04",
+      "title": "应用方案",
+      "blocks": [
+        {
+          "heading": "教学方案｜浆液泵维修证据包v2",
+          "text": "承接上期工单草稿：新增设备映射、温度／振动／负荷单位、质量码、双时间戳、传感器校准记录和手册版本。先离线导入经批准的数据副本，再建立“决策时刻快照→规则校验→可选模型评分→证据引用→人工审核”的流程。输出显示有效样本、排除原因、缺失证据和不确定性；未知设备不得由模型猜测映射。这里是拟议方案，尚未在真实矿山试点。"
+        },
+        {
+          "heading": "权限与集成",
+          "text": "实际试点需由现场批准历史库与CMMS的最小权限：分析账号只读，维修草稿先存隔离区；调度／维修负责人批准建单，控制工程师负责控制变更。工具白名单禁止PLC写入、启停、复位保护和修改报警值。引用记录保留事件ID、文档版本、可用时间、规则／模型版本；工具失败要明确报错，不编造返回值。本课只操作模拟数据，不连接任何生产控制系统。"
+        },
+        {
+          "heading": "数字孪生的适用条件",
+          "text": "本期不为字段清洗建立复杂孪生。只有要推演泵／管路工况或维修窗口，并且拥有可校准的物理参数、边界条件、同期负荷、时间对齐数据及独立验证工况时，才考虑孪生。先定义误差和适用工况；超出范围拒绝推演。仪表盘不是自动具备预测能力的孪生，仿真输出也不是故障真值。"
+        },
+        {
+          "heading": "自动学习仍然受控",
+          "text": "线上积累数据可供离线再训练，但每版要经数据审计、冻结测试、人工签核、版本发布与回滚演练。模型分数变化不授予系统自行修改生产逻辑的权限。"
+        }
+      ]
+    },
+    {
+      "type": "practice",
+      "label": "PART 05",
+      "title": "动手练习",
+      "blocks": [
+        {
+          "heading": "目标与准备｜25分钟，只用模拟数据",
+          "text": "目标：识别“看起来合理但不能进入当时决策”的记录，生成两条标准化输入及六条带原因的排除记录，再完成一张防泄漏评测卡。使用已有Python 3本地解释器即可，无第三方包、账号、收费服务或联网需求；没有环境可手工在表格执行。代码仅是课堂最小示例，不是工业数据接入程序。"
+        },
+        {
+          "heading": "0—5分钟｜先做预测时刻判断",
+          "text": "预测时刻设为2026-10-14 10:00圭亚那时间，即14:00 UTC。P01与P02是唯一有效模拟设备；温度允许K与degC，质量只接受Good。R6源时间虽早，但直到14:01才可用，不能回填到14:00的预测。质量分流是课堂约定，未设置任何现场报警阈值。"
+        },
+        {
+          "heading": "5—15分钟｜运行并解释八条模拟记录",
+          "code": "# Python 3 标准库；只处理内存中的模拟数据，无网络、无文件写入。\nfrom datetime import datetime\nfrom collections import Counter\n\ndef ts(s):\n    d = datetime.fromisoformat(s.replace(\"Z\", \"+00:00\"))\n    if d.tzinfo is None:\n        raise ValueError(\"missing timezone\")\n    return d\n\ncutoff = ts(\"2026-10-14T10:00:00-04:00\")\n# id, asset, sourceTime, availableTime, value, unit, quality\nrows = [\n (\"R1\",\"P01\",\"2026-10-14T13:59:00Z\",\"2026-10-14T13:59:02Z\",300,\"K\",\"Good\"),\n (\"R2\",\"P02\",\"2026-10-14T09:59:00-04:00\",\"2026-10-14T09:59:02-04:00\",26.85,\"degC\",\"Good\"),\n (\"R3\",\"P99\",\"2026-10-14T13:59:00Z\",\"2026-10-14T13:59:02Z\",300,\"K\",\"Good\"),\n (\"R4\",\"P01\",\"2026-10-14T13:59:00Z\",\"2026-10-14T13:59:02Z\",300,\"K\",\"Bad\"),\n (\"R5\",\"P01\",\"2026-10-14T13:59:00Z\",\"2026-10-14T13:59:02Z\",300,\"K\",\"Uncertain\"),\n (\"R6\",\"P01\",\"2026-10-14T13:59:00Z\",\"2026-10-14T14:01:00Z\",300,\"K\",\"Good\"),\n (\"R7\",\"P01\",\"2026-10-14T13:59:00\",\"2026-10-14T13:59:02Z\",300,\"K\",\"Good\"),\n (\"R8\",\"P01\",\"2026-10-14T13:59:00Z\",\"2026-10-14T13:59:02Z\",300,\"unknown\",\"Good\"),\n]\naccepted, rejected = [], []\nfor rid, asset, source, available, value, unit, quality in rows:\n    reason = None\n    if asset not in {\"P01\", \"P02\"}: reason = \"unknown_asset\"\n    elif quality != \"Good\": reason = \"quality_\" + quality\n    elif unit not in {\"K\", \"degC\"}: reason = \"unknown_unit\"\n    else:\n        try:\n            st, at = ts(source), ts(available)\n            if st > at: reason = \"clock_order\"\n            elif st > cutoff or at > cutoff: reason = \"not_available_at_cutoff\"\n        except ValueError:\n            reason = \"invalid_time\"\n    if reason:\n        rejected.append((rid, reason))\n    else:\n        c = round(value - 273.15 if unit == \"K\" else value, 2)\n        accepted.append((rid, asset, c))\nassert accepted == [(\"R1\", \"P01\", 26.85), (\"R2\", \"P02\", 26.85)]\nassert len(rejected) == 6\nprint(\"accepted:\", accepted)\nprint(\"rejected:\", rejected)\nprint(\"counts:\", dict(Counter(reason for _, reason in rejected)))\n"
+        },
+        {
+          "heading": "15—25分钟｜建立不泄露答案的评测卡",
+          "items": [
+            "写下任务：在时刻t生成故障风险证据包；教学标签窗口H=24小时，不能把H当作现场已验证的预警提前量。",
+            "模型输入白名单仅含当时可用的设备／工况／传感器特征；将repairConclusion、replacedPart、failureSubtype和工单关闭时间放入独立标签区，禁止智能体检索。",
+            "将R6改成13:59:03可用后重跑：应有3条接受记录。再恢复原值，去掉R1的时区：应仅剩1条接受记录。修改代码中的assert预期并解释原因；不要删除校验来掩盖差异。",
+            "用纸面样本A（t=10月1日10:00，H=24小时，标签10月2日12:00可用）与B（t=10月3日10:00，H=24小时，标签10月4日12:00可用）设计时间切分。若模型在10月3日09:00冻结，A可用于训练，B只能事后评分；未来B标签不能进入模型或检索库。",
+            "补写同一故障episodeId不能跨集合的检查，以及“数据不足→暂不判断”的输出。两条纸面样本只验流程，不能给出可信模型性能。"
+          ],
+          "answer": "原始运行接受R1、R2，各26.85 °C；R3未知设备、R4 Bad、R5 Uncertain、R6决策时不可用、R7缺时区、R8未知单位，共6条排除。有效率2/8=25%，这是人为构造练习的结果，不是任何矿山的数据质量统计。R6提前可用后接受3条；恢复后再去掉R1时区则接受1条。A标签在冻结前已可用，B标签要到10月4日12:00后才能用来评分。测试集标签可供最终评测，但不能反馈到已冻结模型、提示词、检索索引或阈值选择中。"
+        },
+        {
+          "heading": "官方学习与许可前提",
+          "text": "Python datetime官方文档用于带时区时间处理；标准库代码无需安装商业软件。扩展实验可参考scikit-learn的Pipeline与时间切分（项目采用BSD许可，安装仍需遵守本机管理规定）。本期无需下载UCI数据；若另行下载、改编或分享AI4I，应按CC BY 4.0署名、提供许可信息并标明修改。OPC文档仅作标准阅读，不代表已获生产服务器访问授权。",
+          "sources": [
+            {
+              "title": "Python · datetime官方文档",
+              "url": "https://docs.python.org/3/library/datetime.html"
+            },
+            {
+              "title": "scikit-learn · Common pitfalls（持续更新文档，2026-10-14查阅）",
+              "url": "https://scikit-learn.org/stable/common_pitfalls.html"
+            },
+            {
+              "title": "scikit-learn · TimeSeriesSplit（持续更新文档，2026-10-14查阅）",
+              "url": "https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.TimeSeriesSplit.html"
+            },
+            {
+              "title": "UCI · AI4I 2020（2020-08-29捐赠，CC BY 4.0）",
+              "url": "https://archive.ics.uci.edu/dataset/601/ai4i+2020+predictive+maintenance+dataset"
+            },
+            {
+              "title": "CC BY 4.0许可",
+              "url": "https://creativecommons.org/licenses/by/4.0/"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "conclusion",
+      "label": "PART 06",
+      "title": "结论与下期",
+      "blocks": [
+        {
+          "heading": "本期验收",
+          "items": [
+            "能解释assetId与Product ID的区别、K与°C的换算、源时间与可用时间的区别。",
+            "八条模拟数据的接受／排除结果可复现，Bad、Uncertain、未知单位和晚到数据都有明确去向。",
+            "评测卡包含预测时刻、观察窗、标签可用时间、事件组隔离、冻结版本及拒答条件。",
+            "真实试点分别记录输入有效率、事件级召回／精确率、每设备日误报、提前量、拒答率和人工核查时间，并注明分母与观察期；不只报告总体准确率。"
+          ]
+        },
+        {
+          "heading": "待验证假设",
+          "text": "统一身份与单位能否减少错误引用？按availableTime截断是否会降低离线分数却更贴近实用表现？增加质量拒答能否减少误工单，又是否漏掉真实异常？这些是待验证假设。本期只证明课堂规则可执行，没有证明生产收益、诊断能力或数字孪生精度。"
+        },
+        {
+          "heading": "下一课｜从干净记录到可追溯证据",
+          "text": "推进设备手册版本、适用型号和证据引用：在冻结资料库中检索，遇到过期手册、型号冲突或无证据时拒答。比较固定检索工作流与受限智能体，并用同一份事件级评测集记录正确引用率及人工审核成本。"
+        }
+      ]
+    }
+  ]
+}
