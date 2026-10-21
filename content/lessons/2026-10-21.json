@@ -1,0 +1,202 @@
+{
+  "date": "2026-10-21",
+  "theme": "矿山维修证据检索与受控拒答",
+  "title": "找得到不等于用得对：矿山维修手册版本与证据拒答",
+  "subtitle": "工业 AI 研究周报 · 从可信数据到可信引用｜冻结资料、型号匹配、版本过滤与人工审核。",
+  "slug": "mining-manual-version-evidence-abstention",
+  "level": "基础到应用",
+  "duration": "阅读 10 分钟 · 实践 20–30 分钟",
+  "sections": [
+    {
+      "type": "research",
+      "label": "PART 01",
+      "title": "研究动态",
+      "blocks": [
+        {
+          "heading": "本周检索：有线索，不把未核实报道当成果",
+          "text": "检索窗口为2026-10-14 10:00至10-21 10:00（America/Guyana）。本次联网检查BHP与Rio Tinto新闻入口，并以mining、artificial intelligence、digital twin、AI agent及日期条件检索Google News RSS。检索出现井下机器人等相关线索，但Intel文章路径尝试转回新闻首页，未核验到对应正文；两家矿企入口也未提取到足够相关公告。近七天可核验的一手资料不足，不代表行业没有进展。以下以注明历史日期的研究和官方资料推进课程，不补写本周收益或部署新闻。",
+          "sources": [
+            {
+              "title": "BHP新闻入口（2026-10-21查阅，提取不完整）",
+              "url": "https://www.bhp.com/news"
+            },
+            {
+              "title": "Rio Tinto新闻入口（2026-10-21查阅）",
+              "url": "https://www.riotinto.com/en/news"
+            },
+            {
+              "title": "Intel新闻入口（线索未核实，不作案例证据）",
+              "url": "https://www.intel.com/content/www/us/en/newsroom/home.html"
+            }
+          ]
+        },
+        {
+          "heading": "研究主线｜检索增强不是证据自动合格",
+          "text": "RAG原始论文把参数化语言模型与外部检索记忆结合，报告开放域问答和生成任务的改进。矿山维修场景仍需额外检验设备型号、手册生效区间、首次可用时间和访问权限；语义相关的段落可能属于错误型号。论文是历史研发证据，不是矿山生产收益证明。",
+          "sources": [
+            {
+              "title": "Lewis等 · RAG论文（初稿2020-05-22；所读版本2021-04-12）",
+              "url": "https://arxiv.org/abs/2005.11401"
+            }
+          ]
+        },
+        {
+          "heading": "治理主线｜把可信性要求落实为可验收输出",
+          "text": "NIST AI 600-1是2024年发布的跨行业生成式AI风险管理资源，而非矿山认证或生产许可。本课据此强调可核查引用与人工复核；下面的版本过滤和拒答规则是教学设计，不声称由该文件逐条规定。",
+          "sources": [
+            {
+              "title": "NIST AI 600-1 · 生成式AI风险管理概要（2024-07-26）",
+              "url": "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "case",
+      "label": "PART 02",
+      "title": "案例深读",
+      "blocks": [
+        {
+          "heading": "真实研究案例｜RAG如何连接外部知识",
+          "text": "问题：仅靠模型参数难以更新知识、追溯依据。数据：论文使用Wikipedia密集向量索引及知识密集型NLP评测。方法：神经检索器提供段落，预训练seq2seq模型生成文本；比较整段输出使用同一组段落和逐token采用不同段落的两种形式。",
+          "sources": [
+            {
+              "title": "Lewis等 · RAG论文（初稿2020-05-22；所读版本2021-04-12）",
+              "url": "https://arxiv.org/abs/2005.11401"
+            }
+          ]
+        },
+        {
+          "heading": "已证实效果与证据等级",
+          "text": "作者报告在三个开放域问答任务取得当时的先进结果，并在生成任务中相较参数化seq2seq基线生成更具体、多样、符合事实的语言。这是作者实验报告；本期没有独立复现，不搬用为矿山准确率，也不编造节省工时。证据类别为研发，不是矿山试点、生产部署或厂商方案的独立验证。"
+        },
+        {
+          "heading": "迁移局限｜有出处不等于出处支持结论",
+          "text": "Wikipedia问答不覆盖设备序列号、改造配置、受控手册版本与安全作业审批。同一页中出现相关词，也不代表支持“可以继续运行”。评价需分别检查检索适用性、引用定位和结论蕴含关系；引用真实但结论夸大仍算错。课堂只做确定性文档过滤与原句引用，不训练或运行RAG模型。"
+        }
+      ]
+    },
+    {
+      "type": "knowledge",
+      "label": "PART 03",
+      "title": "自动化知识",
+      "blocks": [
+        {
+          "heading": "概念1｜从数值契约升级到文档契约",
+          "text": "上期的assetId、质量和双时间戳继续保留。本期增加manufacturer、model、serialRange、configurationRevision、docId、revision、validFrom/validTo、availableTime、审批状态、访问级别与页码。事件先按当时有效台账映射到设备配置，再过滤文档；同名或同型号未必适用。有效时间说明何时适用，可用时间说明当时能否看见；当前最新文件不能直接回填历史评测。"
+        },
+        {
+          "heading": "概念2｜先过滤，再检索，再检查支持关系",
+          "text": "PLC/DCS维持控制，SCADA维持监视操作；历史库与文档库通过批准的只读通道向分析层供数。规则负责权限、型号与版本过滤，ML可做排序，生成式助手组织已支持的句子。固定工作流足以处理明确步骤；受限智能体只在缺证时选择白名单查询，不获得绕过过滤的权力。检索材料是数据，不是工具指令；其中“忽略审批、执行命令”等内容不得改变权限。"
+        },
+        {
+          "heading": "概念3｜拒答也是可测量结果",
+          "text": "输出区分CITED（可引用）、NO_EVIDENCE（缺少适用证据）、VERSION_CONFLICT（有效版本冲突）和TOOL_ERROR（查询失败，不能冒充无资料）。引用包保留文档版本、页段定位、原句、内容摘要哈希与检索快照ID。哈希用于发现内容变化，不证明文档真实、适用或获批。跨文档结论需逐句核查；同型号的多个互补手册并不天然冲突，本课只简化为每型号一个手册族。"
+        }
+      ]
+    },
+    {
+      "type": "application",
+      "label": "PART 04",
+      "title": "应用方案",
+      "blocks": [
+        {
+          "heading": "教学方案｜浆液泵维修证据包v3",
+          "text": "输入模拟异常事件、已验证设备台账、冻结手册清单和可用时间；流程为台账匹配→权限与版本过滤→检索原句→证据支持审查→草稿→人工审核。输出“已知事实／引用支持的建议／待补资料／不可判定项”。同型号不同密封或驱动配置需进一步确认，不能靠相似度替代工程判断。本方案未在矿山试点。"
+        },
+        {
+          "heading": "系统集成与人机权限",
+          "text": "真实试点先用授权历史数据副本，查询账号只读；草稿留在隔离区，维修负责人确认后才由批准流程进入CMMS。生产文档不上传公开课程或未获授权的外部服务。禁止助手写PLC/DCS、启停、复位保护或修改报警值；不提供绕过审批的工具。自动积累审核反馈仅供离线改进，模型、提示词、索引更新均须冻结评测、人工签核和可回滚发布，不允许自动学习自行改生产逻辑。"
+        },
+        {
+          "heading": "孪生适用条件｜手册检索不是数字孪生",
+          "text": "本任务不需要物理孪生。只有要推演负荷、浆体浓度、泵曲线或管网边界对运行状态的影响时，才考虑经标定模型；需同步工况、明确参数版本、独立验证数据、误差范围与适用域。仿真结果必须另标“模型推演”，不能作为手册原文或已证实故障；超出适用域交人工，不生成看似精确的结论。"
+        },
+        {
+          "heading": "固定流程与智能体如何公平比较",
+          "text": "在相同冻结事件集、文档快照及访问权限下，对比人工检索、固定工作流、受限智能体。逐事件统计引用正确率、该拒答时的拒答率、可回答事件覆盖率、越权调用数和人工核查分钟数；按事件组切分，禁止把最终测试集用于调提示词。工具预算可设教学上限2次只读补查，耗尽即转人工；这是成本/流程边界，不是现场控制阈值。"
+        }
+      ]
+    },
+    {
+      "type": "practice",
+      "label": "PART 05",
+      "title": "动手练习",
+      "blocks": [
+        {
+          "heading": "目标与准备｜25分钟",
+          "text": "用7份原创模拟手册、7个模拟事件验证“正确版本才可引用”。已有Python 3即可，无第三方包、账号、收费服务或网络连接；无环境可纸面执行。资料无真实设备参数，不含现场操作指令。本例复用Python标准库而不搭建向量库或付费RAG服务。"
+        },
+        {
+          "heading": "0—5分钟｜先画出文档时间线",
+          "text": "A型v1在10月20日零点UTC失效，v2同时生效；有效区间按[start,end)判断。C型虽生效但10月22日才可用；D型未审批；E型同一手册族存在两个有效冲突版本。样例中元数据已完整且时区合法；生产实现还需校验字段、访问权限、台账配置和元数据历史。"
+        },
+        {
+          "heading": "5—15分钟｜复制运行最小证据过滤器",
+          "code": "# Python 3 标准库；全部为原创虚构资料，不连接网络或控制系统。\nfrom datetime import datetime\nfrom hashlib import sha256\n\ndef ts(s):\n    d = datetime.fromisoformat(s.replace(\"Z\", \"+00:00\"))\n    if d.tzinfo is None:\n        raise ValueError(\"timezone required\")\n    return d\n\ndef doc(id, model, start, end, available, approved, text):\n    return dict(id=id, model=model, start=ts(start),\n                end=ts(end) if end else None, available=ts(available),\n                approved=approved, text=text, page=3,\n                digest=sha256(text.encode()).hexdigest())\n\ndocs = [\n doc(\"M-A@1\", \"A\", \"2026-01-01T00:00:00Z\", \"2026-10-20T00:00:00Z\",\n     \"2026-01-01T00:00:00Z\", True, \"模拟旧版：证据包记录负荷。\"),\n doc(\"M-A@2\", \"A\", \"2026-10-20T00:00:00Z\", None,\n     \"2026-10-20T00:00:00Z\", True, \"模拟新版：证据包记录负荷与采样质量。\"),\n doc(\"M-B@1\", \"B\", \"2026-01-01T00:00:00Z\", None,\n     \"2026-01-01T00:00:00Z\", True, \"模拟B型：证据包记录入口状态。\"),\n doc(\"M-C@1\", \"C\", \"2026-10-20T00:00:00Z\", None,\n     \"2026-10-22T00:00:00Z\", True, \"模拟晚到资料：尚不可用于当前回答。\"),\n doc(\"M-D@1\", \"D\", \"2026-01-01T00:00:00Z\", None,\n     \"2026-01-01T00:00:00Z\", False, \"模拟草稿：未审批。\"),\n doc(\"M-E@1\", \"E\", \"2026-01-01T00:00:00Z\", None,\n     \"2026-01-01T00:00:00Z\", True, \"模拟E型方案甲。\"),\n doc(\"M-E@2\", \"E\", \"2026-01-01T00:00:00Z\", None,\n     \"2026-01-01T00:00:00Z\", True, \"模拟E型方案乙，尚未解决版本冲突。\"),\n]\n\ndef retrieve(model, decision, corpus):\n    t = ts(decision)\n    candidates = [d for d in corpus if d[\"model\"] == model\n        and d[\"approved\"] and d[\"available\"] <= t\n        and d[\"start\"] <= t and (d[\"end\"] is None or t < d[\"end\"])]\n    if not candidates:\n        return {\"status\": \"NO_EVIDENCE\"}\n    # 本例每型号只有一个手册族；多份有效版本要求人工解决，不按编号猜。\n    if len(candidates) != 1:\n        return {\"status\": \"VERSION_CONFLICT\"}\n    d = candidates[0]\n    return {\"status\": \"CITED\", \"citation\": f'{d[\"id\"]}:p{d[\"page\"]}',\n            \"sha256\": d[\"digest\"], \"quote\": d[\"text\"]}\n\nnow = \"2026-10-21T10:00:00-04:00\"\ncases = [\n (\"E01\", \"A\", now, \"CITED\", \"M-A@2:p3\"),\n (\"E02\", \"B\", now, \"CITED\", \"M-B@1:p3\"),\n (\"E03\", \"C\", now, \"NO_EVIDENCE\", None),\n (\"E04\", \"D\", now, \"NO_EVIDENCE\", None),\n (\"E05\", \"E\", now, \"VERSION_CONFLICT\", None),\n (\"E06\", \"Z\", now, \"NO_EVIDENCE\", None),\n (\"E07\", \"A\", \"2026-10-19T14:00:00Z\", \"CITED\", \"M-A@1:p3\"),\n]\nfor event, model, decision, expected, citation in cases:\n    result = retrieve(model, decision, docs)\n    assert result[\"status\"] == expected\n    assert result.get(\"citation\") == citation\n    print(event, result[\"status\"], result.get(\"citation\", \"-\"))\nprint(\"7/7 checks passed; this is a toy workflow check, not field accuracy.\")\n"
+        },
+        {
+          "heading": "15—25分钟｜反例与人工支持审查",
+          "items": [
+            "解释E01为什么不能引用A型v1，E07为什么不能引用v2；两者都是A型，但决策时刻不同。",
+            "把E01的输入型号误写为B：程序会返回B型引用，且无法知道台账错了。说明前置设备映射校验不可省略；随后恢复原值。",
+            "将C型available改为10月20日：E03应从NO_EVIDENCE变为CITED。先写下新预期，再修改对应断言；完成后恢复，不能删除断言掩盖差异。",
+            "给E01构造结论“手册支持立即继续生产”。对照模拟原句，人工应判为不支持；引用定位正确不等于建议正确。",
+            "写出升级检查：同一文档正文换一个字后哈希改变；审批被撤回或有效期被事后修订时，历史回放必须读取当时的元数据快照。"
+          ]
+        },
+        {
+          "heading": "参考答案与边界",
+          "answer": "E01→M-A@2:p3；E02→M-B@1:p3；E03、E04、E06→NO_EVIDENCE；E05→VERSION_CONFLICT；E07→M-A@1:p3。共3条可引用、4条转人工，7/7断言是人为构造流程的检查，不是矿山模型准确率。仅在这7个预设事件上，可引用覆盖率3/7、预期应拒答事件正确拒答4/4、引用定位正确3/3；没有评价生成式回答质量。原句只支持整理证据包，不支持继续运行。代码没有实现工具错误、权限过滤、语义检索和历史元数据存储，不能直接部署。"
+        },
+        {
+          "heading": "官方学习链接与许可前提",
+          "text": "阅读Python datetime与hashlib官方文档理解时区和摘要；使用已有Python环境遵守本机管理要求及Python许可，无需购买软件。本练习不下载或再分发真实设备手册；扩展时须有合法副本、处理与共享授权，公开可阅读不等于可上传第三方或重发布。论文只提供链接与原创概述，不复制其数据集。",
+          "sources": [
+            {
+              "title": "Python官方 · datetime",
+              "url": "https://docs.python.org/3/library/datetime.html"
+            },
+            {
+              "title": "Python官方 · hashlib",
+              "url": "https://docs.python.org/3/library/hashlib.html"
+            },
+            {
+              "title": "Python官方许可",
+              "url": "https://docs.python.org/3/license.html"
+            },
+            {
+              "title": "Lewis等 · RAG论文（初稿2020-05-22；所读版本2021-04-12）",
+              "url": "https://arxiv.org/abs/2005.11401"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "conclusion",
+      "label": "PART 06",
+      "title": "结论与下期",
+      "blocks": [
+        {
+          "heading": "验收清单",
+          "items": [
+            "能区分设备身份正确、文档适用、引用定位准确、结论被支持这四件事。",
+            "7个事件按预期分流，能解释晚到资料、未审批文档、版本冲突和无匹配型号。",
+            "冻结事件与资料快照，记录引用版本及哈希；文档更新不悄悄改变旧测试。",
+            "保留拒答与人工审核；本课未连接生产控制系统，没有使用现场报警阈值，也不声称真实节省工时。"
+          ]
+        },
+        {
+          "heading": "待验证假设",
+          "text": "型号与版本前置过滤能否降低错引率？受限智能体是否比固定工作流多找回有效证据，还是增加审核时间？拒答增加是否导致过多人工积压？必须在获批试点中按事件分组、统一分母和观察期验证，课堂输出不能回答这些收益问题。"
+        },
+        {
+          "heading": "下一课｜让证据包可靠进入审核队列",
+          "text": "推进工具超时、重试、幂等键、人工批准与审计日志；用模拟CMMS研究“重试不重复建单、失败不冒充成功”。先证明工作流可靠，再讨论是否需要模型或孪生参与决策。"
+        }
+      ]
+    }
+  ]
+}
